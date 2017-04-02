@@ -1,27 +1,15 @@
 class LRUCache(object):
-    """A customer of ABC Bank with a checking account. Customers have the
-    following properties:
-
-    Attributes:
-        name: A string representing the customer's name.
-        balance: A float tracking the current balance of the customer's account.
-    """
 
     def __init__(self, size):
-        """Return a Customer object whose name is *name* and starting
-        balance is *balance*."""
         self.size = size
         self.cache = {}
 
     def set(self, key, value):
         if len(self.cache) == self.size:
-            remove_key = None
-            for key, val in self.cache.items():
-                val['order'] = val['order'] - 1
-                if val['order'] < 0:
-                    remove_key = key
-
-            self.cache.pop(remove_key)
+            for k, v in self.cache.items():
+                v['order'] -= 1
+                if v['order'] < 0:
+                    self.cache.pop(k)
 
         self.cache[key] = {
             'value': value,
@@ -29,13 +17,17 @@ class LRUCache(object):
         }
 
     def get(self, key):
-        order = self.cache.get(key)['order']
+        if self.cache.get(key):
+            order = self.cache.get(key)['order']
+            for k, v in self.cache.items():
+                if v['order'] > order:
+                    v['order'] -= 1
 
-        for key, val in self.cache.items():
-            if val['order'] > order:
-                val['order'] = val['order'] - 1
+            self.cache.get(key)['order'] = len(self.cache) - 1
 
-        self.cache.get(key)['order'] = len(self.cache) - 1
+            return self.cache.get(key)['value']
+        else:
+            return None
 
 
 

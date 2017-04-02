@@ -1,37 +1,40 @@
 import sys
 from lru import LRUCache
-from pprint import pprint
-
-
-def cachePrint(cache):
-    for key, val in cache.items():
-        print val
-    print '==============='
 
 
 def main():
-    cache = LRUCache(5)
-    cache.set('a', 'A')
-    cache.set('b', 'B')
-    cache.set('c', 'C')
-    cache.set('d', 'D')
-    cache.set('e', 'E')
-    cache.set('f', 'F')
-    cachePrint(cache.cache)
-    cache.get('b')
-    cache.set('g', 'G')
-    # cachePrint(cache.cache)
+    sys.stdout.write('SIZE ')
+    n = sys.stdin.readline().rstrip('\n')
+    try:
+        n = int(n)
+    except:
+        sys.stdout.write('ERROR\n')
+        return
+
+    cache = LRUCache(int(n))
+    sys.stdout.write('SIZE OK\n')
 
     while True: 
-        n = sys.stdin.readline().rstrip('\n')
-        if n == 'EXIT':
+        command = sys.stdin.readline().rstrip('\n')
+        if command == 'EXIT':
             break
-        elif n == 'SET':
-            print cache.size
-            sys.stdout.write('IT WAS SET\n')
-    
+
+        command_args = command.split(' ')
+        if len(command_args) == 3 and command_args[0] == 'SET':
+                key = command_args[1]
+                val = command_args[2]
+                cache.set(key, val)
+                sys.stdout.write('SET OK\n')
+        elif len(command_args) == 2 and command_args[0] == 'GET':
+                key = command_args[1]
+                item = cache.get(key)
+                if item:
+                    sys.stdout.write('GOT %s\n' % item)
+                else:
+                    sys.stdout.write('NOTFOUND\n')
+        else:
+            sys.stdout.write('ERROR\n')
+            
 
 if __name__ == "__main__":
     main()
-
-
